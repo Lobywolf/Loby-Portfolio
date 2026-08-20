@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loby Design | Portafolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo" onclick="switchTab('inicio')">Loby Design.</div>
+            <ul class="nav-links">
+                <li><a onclick="switchTab('inicio')" class="tab-link active" data-target="inicio">Inicio</a></li>
+                <li><a onclick="switchTab('proyectos')" class="tab-link" data-target="proyectos">Proyectos</a></li>
+                <li><a onclick="switchTab('trayectoria')" class="tab-link" data-target="trayectoria">Trayectoria</a></li>
+            </ul>
+            <div class="social-links">
+                <a href="#" target="_blank" aria-label="LinkedIn" class="icon-link">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M6.94 8.5A1.56 1.56 0 1 1 6.94 5.38a1.56 1.56 0 0 1 0 3.12ZM5.5 9.8h2.9V18H5.5V9.8Zm5.08 0h2.77v1.12h.04c.39-.73 1.34-1.5 2.76-1.5 2.96 0 3.51 1.95 3.51 4.49V18h-2.9v-16.7c0-1.01-.02-2.3-1.4-2.3-1.4 0-1.62 1.09-1.62 2.21V18h-2.9V9.8Z"/>
+                    </svg>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="slider-container">
+        <div id="slider-wrapper" class="slider-wrapper">
+            
+            <!-- SECCIÓN 1: HOME -->
+            <section id="inicio" class="section active">
+                <div class="hero">
+                    <h1>Trazamos el camino visual de tu marca.</h1>
+                    <p>Estudio de diseño enfocado en crear identidades memorables. Diseño empírico, trazos nítidos y proyectos hechos para perdurar.</p>
+                    <div class="hero-actions">
+                        <a onclick="switchTab('proyectos')" class="btn">Explorar Portafolio</a>
+                        <a href="#" class="btn btn-secondary">
+                            <span class="btn-content">
+                                <span class="material-symbols-outlined download-icon">download</span>
+                                Descargar CV
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: PROYECTOS -->
+            <section id="proyectos" class="section">
+                <h2 style="text-align: center; margin-bottom: 2rem;">Portafolio de diseño</h2>
+                
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterProjects(event, 'todos')">Todos</button>
+                    <button class="filter-btn" onclick="filterProjects(event, 'web')">Diseño Web</button>
+                    <button class="filter-btn" onclick="filterProjects(event, 'multimedia')">Multimedia</button>
+                    <button class="filter-btn" onclick="filterProjects(event, 'mailing')">Mailing</button>
+                    <button class="filter-btn" onclick="filterProjects(event, 'vrchat')">VRChat</button>
+                </div>
+
+                <div class="gallery">
+                    <div class="project-card web todos">
+                        <div class="project-img">Rediseño Web PTJ</div>
+                        <div class="project-info">
+                            <span class="project-category">Diseño Web</span>
+                            <h3>PTJ</h3>
+                            <p class="project-desc">Rediseño de sitio web con enfoque comercial y experiencia de usuario.</p>
+                            <a href="#" class="project-link" aria-label="Visitar Web PTJ">
+                                <span class="material-symbols-outlined">open_in_new</span>
+                                Visitar Web
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="project-card web todos">
+                        <div class="project-img">Rediseño Web PPE</div>
+                        <div class="project-info">
+                            <span class="project-category">Diseño Web</span>
+                            <h3>PPE</h3>
+                            <p class="project-desc">Actualización visual y estructural para una presencia web más moderna.</p>
+                            <a href="#" class="project-link" aria-label="Visitar Web PPE">
+                                <span class="material-symbols-outlined">open_in_new</span>
+                                Visitar Web
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="project-card web todos">
+                        <div class="project-img">Diseño Web JEMO</div>
+                        <div class="project-info">
+                            <span class="project-category">Diseño Web</span>
+                            <h3>JEMO</h3>
+                            <p class="project-desc">Diseño de interfaces y sistema visual orientado a usabilidad.</p>
+                            <a href="#" class="project-link" aria-label="Visitar Web JEMO">
+                                <span class="material-symbols-outlined">open_in_new</span>
+                                Visitar Web
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="project-card vrchat todos">
+                        <div class="project-img">Diseño de Avatar VRChat</div>
+                        <div class="project-info">
+                            <span class="project-category">VRChat</span>
+                            <h3>Personajes VRChat</h3>
+                            <p class="project-desc">Modificación y diseño de avatars con estilo propio, proporción cuidada y estética visual adaptada al entorno virtual.</p>
+                        </div>
+                    </div>
+
+                    <div class="project-card mailing todos">
+                        <div class="project-img">Mailing</div>
+                        <div class="project-info">
+                            <span class="project-category">Mailing</span>
+                            <h3>Campaña de Email</h3>
+                            <p class="project-desc">Diseño y estructuración visual para comunicación empresarial.</p>
+                        </div>
+                    </div>
+
+                    <div class="project-card multimedia todos">
+                        <div class="project-img">Multimedia</div>
+                        <div class="project-info">
+                            <span class="project-category">Multimedia</span>
+                            <h3>Contenido Visual</h3>
+                            <p class="project-desc">Diseño de piezas audiovisuales y materiales digitales para marca.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: TRAYECTORIA -->
+            <section id="trayectoria" class="section">
+                <div class="trayectoria-content">
+                    <div class="trayectoria-text">
+                        <h2>Sobre mí</h2>
+                        <p>Soy un diseñador apasionado por crear marcas con sentido. Mi enfoque se basa en la empatía y en el entendimiento profundo de lo que cada cliente necesita comunicar.</p>
+                        <p>Con experiencia en branding, interfaces y dirección de arte, busco dejar una huella de excelencia en cada proyecto, guiando a las empresas hacia su mejor versión visual.</p>
+                        <br>
+                        <a href="mailto:hola@tucorreo.com" class="btn">Contáctame</a>
+                    </div>
+                    <div class="trayectoria-img">
+                        <div class="placeholder-img">
+                            [Tu Foto o Imagen de Estudio]
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
