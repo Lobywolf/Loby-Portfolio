@@ -78,7 +78,7 @@ function showScreen(id, resetScroll = true) {
         panel.setAttribute('aria-hidden', String(!active));
     });
     const index = screens.indexOf(id);
-    wrapper.style.transform = `translateX(-${index * 100}%)`;
+    wrapper.style.transform = `translateX(calc(${index * -100}% + var(--touch-offset, 0px)))`;
     mainLinks.forEach(link => {
         if (link.hash === `#${id}`) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
@@ -126,27 +126,69 @@ function navigateTo(target, focusHeading = true) {
 function setupTouchNavigation() {
     const mobileLayout = window.matchMedia('(max-width: 760px)');
     let start;
+    let preview;
+
+    function clearGesture() {
+        start = undefined;
+        wrapper.classList.remove('is-dragging');
+        wrapper.style.removeProperty('--touch-offset');
+        preview?.style.removeProperty('translate');
+        preview = undefined;
+    }
 
     slider.addEventListener('touchstart', event => {
-        start = undefined;
+        clearGesture();
         if (!mobileLayout.matches || event.touches.length !== 1) return;
         const touch = event.touches[0];
         // Leave the edges available for the browser's back and forward gestures.
         if (touch.clientX < 24 || touch.clientX > document.documentElement.clientWidth - 24) return;
-        start = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
+        start = {
+            id: touch.identifier,
+            x: touch.clientX,
+            y: touch.clientY,
+            index: screens.indexOf(currentScreen),
+            width: slider.clientWidth,
+            scrollY: Math.max(0, window.scrollY),
+        };
     }, { passive: true });
 
-    slider.addEventListener('touchcancel', () => { start = undefined; }, { passive: true });
+    slider.addEventListener('touchmove', event => {
+        if (!start) return;
+        if (!mobileLayout.matches || event.touches.length !== 1 || currentScreen !== screens[start.index]) {
+            return clearGesture();
+        }
+        const touch = event.touches[0];
+        if (touch.identifier !== start.id) return clearGesture();
+        const x = touch.clientX - start.x;
+        const y = touch.clientY - start.y;
+        if (!start.dragging) {
+            if (Math.hypot(x, y) < 10) return;
+            if (Math.abs(x) < Math.abs(y) * 1.35) return clearGesture();
+            start.dragging = true;
+            wrapper.classList.add('is-dragging');
+        }
+
+        const next = screens[start.index + (x < 0 ? 1 : -1)];
+        const panel = next && document.getElementById(next);
+        if (preview !== panel) {
+            preview?.style.removeProperty('translate');
+            preview = panel || undefined;
+            if (preview && start.scrollY) preview.style.translate = `0 ${start.scrollY}px`;
+        }
+        const offset = next ? Math.min(Math.abs(x), start.width) : Math.min(Math.abs(x) * .18, 18);
+        wrapper.style.setProperty('--touch-offset', `${Math.sign(x) * offset}px`);
+    }, { passive: true });
+
+    slider.addEventListener('touchcancel', clearGesture, { passive: true });
     slider.addEventListener('touchend', event => {
         const origin = start;
-        start = undefined;
-        if (!origin || event.touches.length) return;
+        clearGesture();
+        if (!origin?.dragging || event.touches.length || currentScreen !== screens[origin.index]) return;
         const touch = Array.from(event.changedTouches).find(item => item.identifier === origin.id);
         if (!touch) return;
         const x = touch.clientX - origin.x;
-        const y = touch.clientY - origin.y;
-        if (Math.abs(x) < 60 || Math.abs(x) < Math.abs(y) * 1.5) return;
-        const next = screens[screens.indexOf(currentScreen) + (x < 0 ? 1 : -1)];
+        if (Math.abs(x) < Math.min(origin.width * .23, 105)) return;
+        const next = screens[origin.index + (x < 0 ? 1 : -1)];
         if (next) navigateTo(document.getElementById(next));
     }, { passive: true });
 }
