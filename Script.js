@@ -123,6 +123,34 @@ function navigateTo(target, focusHeading = true) {
     }
 }
 
+function setupTouchNavigation() {
+    const mobileLayout = window.matchMedia('(max-width: 760px)');
+    let start;
+
+    slider.addEventListener('touchstart', event => {
+        start = undefined;
+        if (!mobileLayout.matches || event.touches.length !== 1) return;
+        const touch = event.touches[0];
+        // Leave the edges available for the browser's back and forward gestures.
+        if (touch.clientX < 24 || touch.clientX > document.documentElement.clientWidth - 24) return;
+        start = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
+    }, { passive: true });
+
+    slider.addEventListener('touchcancel', () => { start = undefined; }, { passive: true });
+    slider.addEventListener('touchend', event => {
+        const origin = start;
+        start = undefined;
+        if (!origin || event.touches.length) return;
+        const touch = Array.from(event.changedTouches).find(item => item.identifier === origin.id);
+        if (!touch) return;
+        const x = touch.clientX - origin.x;
+        const y = touch.clientY - origin.y;
+        if (Math.abs(x) < 60 || Math.abs(x) < Math.abs(y) * 1.5) return;
+        const next = screens[screens.indexOf(currentScreen) + (x < 0 ? 1 : -1)];
+        if (next) navigateTo(document.getElementById(next));
+    }, { passive: true });
+}
+
 function returnHome(target) {
     if (window.scrollY <= 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         return navigateTo(target);
@@ -170,6 +198,7 @@ categoryButtons.forEach(button => button.addEventListener('click', () => {
     adjustSliderHeight();
 }));
 setupKeyboard(document.querySelector('.category-tabs'));
+setupTouchNavigation();
 screenArrows.forEach(button => button.addEventListener('click', () => {
     const index = screens.indexOf(currentScreen) + Number(button.dataset.screenStep);
     const id = screens[index];
