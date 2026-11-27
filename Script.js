@@ -80,7 +80,7 @@ function showScreen(id, resetScroll = true) {
     const index = screens.indexOf(id);
     wrapper.style.transform = `translateX(-${index * 100}%)`;
     mainLinks.forEach(link => {
-        if (link.hash === `#${id}`) link.setAttribute('aria-current', 'page');
+        if (link.hash === `#${id}`) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
     });
     screenArrows.forEach(button => {
@@ -99,10 +99,15 @@ function followRoute() {
     const id = window.location.hash.slice(1) || 'inicio';
     if (screens.includes(id)) return showScreen(id);
     const projectId = previousProjectRoutes.get(id) ?? id.replace(/^(jemo|ptj|ppe)-area-([1-4])$/, '$1-$2');
-    const category = document.getElementById(projectId)?.closest('.category');
+    const target = document.getElementById(projectId);
+    const category = target?.closest('.category');
     if (category) {
         selectCategory(category.id);
-        return showScreen('proyectos');
+        showScreen('proyectos', false);
+        const headerHeight = document.querySelector('header').offsetHeight;
+        const top = window.scrollY + target.getBoundingClientRect().top;
+        window.scrollTo({ top: top - headerHeight - 16, behavior: 'instant' });
+        return;
     }
     showScreen(currentScreen, false);
 }
@@ -111,7 +116,7 @@ function navigateTo(target, focusHeading = true) {
     const hash = `#${target.id}`;
     if (window.location.hash !== hash) history.pushState(null, '', hash);
     followRoute();
-    const heading = focusHeading && target.querySelector('h1, h2, h3');
+    const heading = focusHeading && target.querySelector('h1, h2, h3, h4');
     if (heading) {
         heading.tabIndex = -1;
         heading.focus({ preventScroll: true });
@@ -193,7 +198,6 @@ document.documentElement.classList.add('js');
 followRoute();
 window.addEventListener('hashchange', followRoute);
 
-window.addEventListener('popstate', followRoute);
 window.addEventListener('resize', updateLayout);
 if ('ResizeObserver' in window) {
     const resizeObserver = new ResizeObserver(updateLayout);
